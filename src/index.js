@@ -47,23 +47,23 @@ app.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
 
+// Week1 tehtävä
+// app.get('/items/:id', (req, res) => {
+//   console.log('Requested item id:', req.params.id);
+//   const requestedId = parseInt(req.params.id);
 
-app.get('/items/:id', (req, res) => {
-  console.log('Requested item id:', req.params.id);
-  const requestedId = parseInt(req.params.id);
+//   if (isNaN(requestedId)) {
+//     return res.status(400).send('Invalid ID');
+//   }
 
-  if (isNaN(requestedId)) {
-    return res.status(400).send('Invalid ID');
-  }
+//   const item = items.find(item => item.id === requestedId);
 
-  const item = items.find(item => item.id === requestedId);
-
-  if (item) {
-    res.json(item);
-  } else {
-    res.status(404).send('Item not found');
-  }
-});
+//   if (item) {
+//     res.json(item);
+//   } else {
+//     res.status(404).send('Item not found');
+//   }
+// });
 
 
 // const server = http.createServer((req, res) => {
