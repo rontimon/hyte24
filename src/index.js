@@ -1,12 +1,14 @@
-// index.js
+// Main JS file
 import express from 'express';
-import path, { parse } from 'path';
+import path from 'path';
 import {fileURLToPath} from 'url';
-import { deleteItem, getItemById, postItem, putItem } from './items.mjs';
+import {deleteItem, getItemById, getItems, postItem, putItem} from './items.mjs';
+import {getUserById, getUsers, postUser, postLogin, putUser} from './users.mjs';
 const hostname = '127.0.0.1';
 const port = 3000;
 const app = express();
 
+app.use(express.json());
 // Staattinen sivusto palvelimen juureen (public-kansion sisältö näkyy osoitteessa http://127.0.0.1:3000/sivu.html)
 app.use(express.static('public'));
 const __filename = fileURLToPath(import.meta.url);
@@ -16,25 +18,29 @@ const __dirname = path.dirname(__filename);
 app.use('/sivusto', express.static(path.join(__dirname, '../public')));
 
 
-// RESOURSE /item endpoints
+// RESOURCE /item endpoints
 // GET http://127.0.0.1:3000/items
 app.get('/items', getItems);
 // GET http://127.0.0.1:3000/items/<ID>
 app.get('/items/:id', getItemById);
-// POST http://127.0.0.1:3000/items/
+// POST http://127.0.0.1:3000/items/ (Itemin lisäys)
 app.post('/items', postItem);
 // PUT
-app.put('/item/:id', putItem);
+app.put('/items/:id', putItem);
 // DELETE
-app.delete('/item/:id', deleteItem);
-// TODO: palauta vain se objekti, jonka id vastaa pyydettyä
-//  console.log('requested item id', req.params.id);
-//  let item = 'tämän tilalle oikea objekti';
-//  res.json(item);
-// });
+app.delete('/items/:id', deleteItem);
 
-
-
+// Users resource
+// list users
+app.get('/users', getUsers);
+// get info of a user
+app.get('/users/:id', getUserById);
+// user registration
+app.post('/users', postUser);
+// user login
+app.post('/users/login', postLogin);
+// update user
+app.put('/users/:id', putUser);
 
 
 // GET http://127.0.0.1:3000
@@ -46,37 +52,3 @@ app.get('/', (req, res) => {
 app.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
-
-// Week1 tehtävä
-// app.get('/items/:id', (req, res) => {
-//   console.log('Requested item id:', req.params.id);
-//   const requestedId = parseInt(req.params.id);
-
-//   if (isNaN(requestedId)) {
-//     return res.status(400).send('Invalid ID');
-//   }
-
-//   const item = items.find(item => item.id === requestedId);
-
-//   if (item) {
-//     res.json(item);
-//   } else {
-//     res.status(404).send('Item not found');
-//   }
-// });
-
-
-// const server = http.createServer((req, res) => {
-//  console.log('request obj:', req.url, req.headers, req.method);
-//  if (req.url === '/jotain') {
-//    res.end('Hait jotain!');
-//    return;
-//  }
-//  res.writeHead(200, {'Content-Type': 'text/html'});
-//  res.end('<h1>Tervetuloa sivulle!</h1>');
-// });
-
-// server.listen(port, hostname, () => {
-//  console.log(`Server running at http://${hostname}:${port}/`);
-// });
-
