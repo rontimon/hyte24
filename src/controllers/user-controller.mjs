@@ -19,6 +19,8 @@ const users = [
   },
 ];
 
+// use userModel (db) instead of mock data
+
 // TODO: implement route handlers below for users
 
 const getUsers = (req, res) => {
