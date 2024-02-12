@@ -1,84 +1,70 @@
-const users = [
-  {
-    id: 1,
-    username: "johndoe",
-    password: "password1",
-    email: "johndoe@example.com",
-  },
-  {
-    id: 2,
-    username: "janedoe",
-    password: "password2",
-    email: "janedoe@example.com",
-  },
-  {
-    id: 3,
-    username: "bobsmith",
-    password: "password3",
-    email: "bobsmith@example.com",
-  },
-];
+import {
+  deleteUserById,
+  insertUser,
+  listAllUsers,
+  selectUserById,
+  updateUserById,
+} from '../models/user-model.mjs';
 
-// use userModel (db) instead of mock data
 
-// TODO: implement route handlers below for users
+// TODO: imprelemt route handlers below for users (real data)
 
-const getUsers = (req, res) => {
-  res.json(users);
+const getUsers = async (req, res) => {
+  const result = await listAllUsers();
+  if (result.error) {
+    return res.status(result.error).json(result);
+  }
+  return res.json(result);
 };
 
 // Hakee Idllä henkilön tiedot    //tehty
-const getUserById = (req, res) => {
-  // TODO: implement this
-  const userId = parseInt(req.params.id);
-  const user = users.find(u => u.id === userId);
-
-  if (user) {
-    res.json(user); //käyttäjä löytyi ja lähetetään tiedot json muodossa
-  } else {
-    res.status(404).send('Käyttäjää ei löytynyt');
+const getUserById = async (req, res) => {
+  const result = await selectUserById(req.params.id);
+  if (result.error) {
+    return res.status(result.error).json(result);
   }
-  // res.send('not working yet');
+  return res.json(result);
 };
 
 // Lisää uuden käyttäjän
-const postUser = (req, res) => {
-  const newUser = req.body;
-  if (!newUser.username || !newUser.password || !newUser.email) {
-    return res.status(400).send('Tietoja puuttuu');
+const postUser = async (req, res) => {
+  const {username, password, email} = req.body;
+  // check that all needed fields are included in request
+  if (username && password && email) {
+    const result = await insertUser(req.body);
+    if (result.error) {
+      return res.status(result.error).json(result);
+    }
+    return res.status(201).json(result);
+  } else {
+    return res.status(400).json({error: 400, message: 'bad request'});
   }
-  // Luodaan käyttäjä ja määritetään sille uusi ID
-  const userId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
-  const userToAdd = {id: userId, ...newUser};
-  // Lisää käyttäjän taulukkoon
-  users.push(userToAdd);
-
-  res.status(201).json(userToAdd);
-  // TODO: implement this
-  // res.send('not working yet');
 };
 
+
 // Muokkaa olemassa olevaa käyttäjää
-const putUser = (req, res) => {
-  const userId = parseInt(req.params.id);
-  const userIndex = users.findIndex(u => u.id === userId);
-
-  // tarkistetaan, löytyikö käyttäjä annetulla Id:llä
-  if (userIndex === -1) {
-    return res.status(404).send('Käyttäjää ei löytynyt');
+const putUser = async (req, res) => {
+  const user_id = req.params.id;
+  const {username, password, email} = req.body;
+  // check that all needed fields are included in request
+  if (user_id && username && password && email) {
+    const result = await updateUserById({user_id, ...req.body});
+    if (result.error) {
+      return res.status(result.error).json(result);
+    }
+    return res.status(201).json(result);
+  } else {
+    return res.status(400).json({error: 400, message: 'bad request'});
   }
+};
 
-  const updateUser = req.body;
-  if (!updateUser.username || !updateUser.password || !updateUser.email) {
-    return res.status(400).send('Tietoja puuttuu');
+
+const deleteUser = async (req, res) => {
+  const result = await deleteUserById(req.params.id);
+  if (result.error) {
+    return res.status(result.error).json(result);
   }
-
-  // päivitetään käyttäjän tiedot
-
-  users[userIndex] = { id: userId, ...updateUser };
-  res.json(users[userIndex]);
-
-  // TODO: implement this
+  return res.json(result);
 };
 
 // Dummy login, returns user object if username & password match
@@ -87,7 +73,7 @@ const postLogin = (req, res) => {
   if (!userCreds.username || !userCreds.password) {
     return res.sendStatus(400);
   }
-  const userFound = users.find(user => user.username == userCreds.username);
+  const userFound = users.find((user) => user.username == userCreds.username);
   // user not found
   if (!userFound) {
     return res.status(403).json({error: 'username/password invalid'});
@@ -100,4 +86,4 @@ const postLogin = (req, res) => {
   }
 };
 
-export {getUsers, getUserById, postUser, putUser, postLogin};
+export {getUsers, getUserById, postUser, putUser, postLogin, deleteUser};
