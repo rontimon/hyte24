@@ -1,10 +1,17 @@
-/* eslint-disable max-len */
 /* eslint-disable camelcase */
-/* estlint-disable max-len */
-import {listAllEntries, findEntryById, addEntry, updateEntry} from '../models/entry-model.mjs';
+import {
+  listAllEntries,
+  findEntryById,
+  addEntry,
+  deleteEntryById,
+  updateEntryById,
+  listAllEntriesByUserId,
+} from '../models/entry-model.mjs';
 
 const getEntries = async (req, res) => {
-  const result = await listAllEntries();
+  // return only logged in user's own entries
+  // - get user's id from token (req.user.user_id)
+  const result = await listAllEntriesByUserId(req.user.user_id);
   if (!result.error) {
     res.json(result);
   } else {
@@ -13,8 +20,8 @@ const getEntries = async (req, res) => {
   }
 };
 
-const getEntryById = (req, res) => {
-  const entry = findEntryById(req.params.id);
+const getEntryById = async (req, res) => {
+  const entry = await findEntryById(req.params.id);
   if (entry) {
     res.json(entry);
   } else {
@@ -39,13 +46,13 @@ const postEntry = async (req, res) => {
 };
 
 const putEntry = async (req, res) => {
-  // not implemented yet with the mock data
   const entry_id = req.params.id;
-  const {username, password, email} = req.body;
-  if (entry_id, username, password, email) {
-    const result = await updateEntry(entry_id, ...req.body);
+  const {entry_date, mood, weight, sleep_hours, notes} = req.body;
+  // check that all needed fields are included in request
+  if ((entry_date || weight || mood || sleep_hours || notes) && entry_id) {
+    const result = await updateEntryById({entry_id, ...req.body});
     if (result.error) {
-      res.status(result.error).json(result);
+      return res.status(result.error).json(result);
     }
     return res.status(201).json(result);
   } else {
@@ -54,9 +61,9 @@ const putEntry = async (req, res) => {
 };
 
 const deleteEntry = async (req, res) => {
-  const result = await deleteEntry(req.params.id);
+  const result = await deleteEntryById(req.params.id);
   if (result.error) {
-    res.status(result.error).json(result);
+    return res.status(result.error).json(result);
   }
   return res.json(result);
 };
