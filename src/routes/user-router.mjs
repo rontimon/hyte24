@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import express from 'express';
 import {
   getUserById,
@@ -6,7 +7,7 @@ import {
   putUser,
   deleteUser,
 } from '../controllers/user-controller.mjs';
-import {authenticateToken} from '../middlewares/authentication.mjs';
+import {authenticateToken, authenticateTokenAndAuthorize} from '../middlewares/authentication.mjs';
 
 // eslint-disable-next-line new-cap
 const userRouter = express.Router();
@@ -29,5 +30,8 @@ userRouter
     .get(authenticateToken, getUserById)
 // delete user based on id
     .delete(authenticateToken, deleteUser);
+
+// Roolipojainen autentikointi /users-reitillä
+userRouter.get('/', authenticateTokenAndAuthorize(['admin']), getUsers);
 
 export default userRouter;

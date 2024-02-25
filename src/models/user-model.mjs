@@ -83,7 +83,7 @@ const deleteUserById = async (id) => {
 // Used for login
 const selectUserByUsername = async (username) => {
   try {
-    const sql = 'SELECT * FROM Users WHERE username=?';
+    const sql = 'SELECT user_id, username, role FROM Users WHERE username=?';
     const params = [username];
     const [rows] = await promisePool.query(sql, params);
     // console.log(rows);
@@ -93,7 +93,8 @@ const selectUserByUsername = async (username) => {
     }
     return rows[0];
   } catch (error) {
-    console.error('selectUserByNameAndPassword', error);
+    // console.error('selectUserByNameAndPassword', error);
+    console.error('selectUserByUsername', error);
     return {error: 500, message: 'db error'};
   }
 };
