@@ -1,5 +1,5 @@
-/* eslint-disable max-len */
 import express from 'express';
+import { body } from 'express-validator';
 import {
   getUserById,
   getUsers,
@@ -7,31 +7,25 @@ import {
   putUser,
   deleteUser,
 } from '../controllers/user-controller.mjs';
-import {authenticateToken, authenticateTokenAndAuthorize} from '../middlewares/authentication.mjs';
+import { authenticateToken } from '../middlewares/authentication.mjs';
 
-// eslint-disable-next-line new-cap
 const userRouter = express.Router();
 
-// /user endpoint
-userRouter
-// eslint-disable-next-line indent
-  .route('/')
-// list users
-    .get(authenticateToken, getUsers)
-// update user
-    .put(authenticateToken, putUser)
-// user registration
-    .post(postUser);
+userRouter.route('/')
+  .get(authenticateToken, getUsers)
+  .put(authenticateToken, [
+    body('username').optional().trim().isLength({ min: 3, max: 20 }).isAlphanumeric(),
+    body('email').optional().trim().isEmail(),
+    body('password').optional().trim().isLength({ min: 8, max: 128 }),
+  ], putUser)
+  .post([
+    body('username').trim().isLength({ min: 3, max: 20 }).isAlphanumeric().withMessage('Käyttäjänimen tulee olla vähintään 3 merkin mittainen.'),
+    body('password').trim().isLength({ min: 8, max: 128 }).withMessage('Salasanan tulee olla vähintään 8 merkin mittainen.'),
+    body('email').trim().isEmail().withMessage('Virheellinen sähköpostiosoite.'),
+  ], postUser);
 
-// /user/:id endpoint
-userRouter
-    .route('/:id')
-// get info of a user
-    .get(authenticateToken, getUserById)
-// delete user based on id
-    .delete(authenticateToken, deleteUser);
-
-// Roolipojainen autentikointi /users-reitillä
-userRouter.get('/', authenticateTokenAndAuthorize(['admin']), getUsers);
+userRouter.route('/:id')
+  .get(authenticateToken, getUserById)
+  .delete(authenticateToken, deleteUser);
 
 export default userRouter;

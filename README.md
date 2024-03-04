@@ -1,23 +1,17 @@
-# Hyte web dev example back-end server
-
-**Node.js + Express** application.
+Hyte web dev example back-end server
+Node.js + Express application.
 
 (Check weekly branches too.)
 
-## Usage
-
-1. Clone/download code
-2. Run `npm i` inside project folder
-3. Install & start MySQL/MariaDB server
-4. Import database script(s) in `db/` folder
-5. Create `.env` file based on `.env.sample`
-6. Start the dev server: `npm run dev` / `npm start`
-
-## Resources and endpoints
-
-### `/items` (works with hard-coded mock data only, no need for db)
-
-```http
+Usage
+Clone/download code
+Run npm i inside project folder
+Install & start MySQL/MariaDB server
+Import database script(s) in db/ folder
+Create .env file based on .env.sample
+Start the dev server: npm run dev / npm start
+Resources and endpoints
+/items (works with hard-coded mock data only, no need for db)
 GET http://127.0.0.1:3000/items
 GET http://127.0.0.1:3000/items/:id
 DELETE http://127.0.0.1:3000/items/:id
@@ -25,24 +19,20 @@ DELETE http://127.0.0.1:3000/items/:id
 POST http://127.0.0.1:3000/items
 content-type: application/json
 body: {"name": "New Item"}
-```
-
-### `/api/users`
-
+/api/users
 Example queries:
 
-```http
-# Get all users
-GET http://127.0.0.1:3000/users
+# Get all users (requires token)
+GET http://127.0.0.1:3000/api/users
 
-# Get user by id
-GET http://127.0.0.1:3000/users/:id
+# Get user by id (requires token)
+GET http://127.0.0.1:3000/api/users/:id
 
-# Delete user
-DELETE http://127.0.0.1:3000/users/:id
+# Delete user (requires token)
+DELETE http://127.0.0.1:3000/api/users/:id
 
 # Create user
-POST http://127.0.0.1:3000/users
+POST http://127.0.0.1:3000/api/users
 content-type: application/json
 
 {
@@ -52,7 +42,7 @@ content-type: application/json
 }
 
 # Update user's own data (requires token)
-PUT http://127.0.0.1:3000/users/
+PUT http://127.0.0.1:3000/api/users/
 content-type: application/json
 
 {
@@ -69,11 +59,7 @@ content-type: application/json
   "username": "user",
   "password": "secret"
 }
-
-```
-
-### `/api/entries`
-
+/api/entries
 Example queries:
 
 # Get all entries for a logged in user (requires token)
