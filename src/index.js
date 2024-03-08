@@ -32,10 +32,9 @@ app.use(express.static('public'));
 
 // Staattinen sivusto voidaan tarjoilla myös "ali-url-osoitteessa": http://127.0.0.1:3000/sivusto
 // Tarjoiltava kansio määritellään relatiivisella polulla
-// (tässä käytössä sama kansio kuin yllä oleva public).
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-app.use('/sivusto', express.static(path.join(__dirname, '../public')));
+app.use('/docs', express.static(path.join(__dirname, '../docs')));
 
 // Test RESOURCE /items endpoints
 // (just mock data for testing, not connected to any database)
