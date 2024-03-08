@@ -1,11 +1,15 @@
 import express from 'express';
-import {deleteItem, getItemById, getItems, postItem, putItem} from '../controllers/item-controller.mjs';
+import {
+  deleteItem,
+  getItemById,
+  getItems,
+  postItem,
+  putItem,
+} from '../controllers/item-controller.mjs';
 
 const itemRouter = express.Router();
 
-
-//define routes here
-
+// define routes here
 // GET http://127.0.0.1:3000/items
 itemRouter.get('/', getItems);
 // GET http://127.0.0.1:3000/items/<ID>
