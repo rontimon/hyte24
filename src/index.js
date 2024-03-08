@@ -9,6 +9,7 @@ import cors from 'cors';
 import logger from './middlewares/logger.mjs';
 import authRouter from './routes/auth-router.mjs';
 import {errorHandler, notFoundHandler} from './middlewares/error-handler.mjs';
+import trainingDiaryRouter from './routes/training-diary-router.mjs';
 const hostname = '127.0.0.1';
 const port = 3000;
 const app = express();
@@ -58,3 +59,6 @@ app.use(errorHandler);
 app.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
+
+// Päiväkirjamerkintöjen lisääminen
+app.use('/api/training-diary', trainingDiaryRouter);
