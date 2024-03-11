@@ -5,6 +5,10 @@ import {
   deleteEntryById,
   updateEntryById,
   listAllEntriesByUserId,
+  addDiaryEntry,
+  getDiaryEntriesByUserId,
+  updateDiaryEntry,
+  deleteDiaryEntry,
 } from '../models/entry-model.mjs';
 
 const getEntries = async (req, res, next) => {
@@ -56,4 +60,113 @@ const deleteEntry = async (req, res, next) => {
   return res.json(result);
 };
 
-export {getEntries, getEntryById, postEntry, putEntry, deleteEntry};
+
+
+
+
+// Päiväkirjamerkinnät
+
+
+// Lisää päiväkirjamerkinnän
+const postDiaryEntry = async (req, res, next) => {
+  try {
+    const result = await addDiaryEntry(req.body);
+    res.status(201).json({ message: 'Diary entry added succesfully.', result });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Hakee käyttäjän päiväkirjamerkinnät
+
+const getUserDiaryEntries = async (req, res, next) => {
+  try {
+    const userId = req.user.user_id;
+    const entries = await getDiaryEntriesByUserId(userId);
+    res.json(entries);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Päivittää päiväkirjamerkinnän
+
+const putDiaryEntry = async (req, res, next) => {
+  try {
+    const entryId = req.params.id;
+    const result = await updateDiaryEntry(entryId, req.body);
+    res.json({ message: 'Diary entry updated successfully', result });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// poistaa päiväkirjamerkinnän
+
+const deleteDiaryEntryController = async (req, res, next) => {
+  try {
+    const entryId = req.params.id;
+    const result = await deleteDiaryEntry(entryId);
+    res.json({ message: 'Diary entry deleted successfully', result });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
+
+
+export {getEntries,
+  getEntryById,
+  postEntry,
+  putEntry,
+  deleteEntry,
+  // päiväkirjamerkinnät
+  postDiaryEntry,
+  getUserDiaryEntries,
+  putDiaryEntry,
+  deleteDiaryEntryController,
+  };
+
+// Uuden päiväkirjamerkinnän luominen
+
+// haetaan päiväkirjamerkinnät:
+
+// const getDiaryEntriesByUser = async (req, res) => {
+//   const userId = req.user.user_id;
+
+//   try {
+//     const entries = await listAllDiaryEntriesByUserId(userId);
+//     return res.json(entries);
+//   } catch (error) {
+//     console.error('getExerciseEntriesByUser error:', error);
+//     return res.status(500).json({error: 'Database error'});
+//   }
+// };
+
+// const postDiaryEntry = async (req, res, next) => {
+//   try {
+//     // Oletetaan, että req.body sisältää tarvittavat tiedot
+//     const newEntry = await addEntry(req.body);
+//     res.status(201).json(newEntry);
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
+// // Haetaan päiväkirjamerkintä
+
+// const getDiaryEntries = async (req, res, next) => {
+//   try {
+//     const userId = req.user.user_id; // Oletetaan, että käyttäjän id on saatavilla req.userista
+//     const entries = await listAllEntriesByUserId(userId);
+//     res.json(entries);
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
+
+
+

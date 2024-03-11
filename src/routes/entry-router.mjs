@@ -6,6 +6,11 @@ import {
   postEntry,
   putEntry,
   deleteEntry,
+  // Päiväkirjamerkinnät
+  getUserDiaryEntries,
+  postDiaryEntry,
+  putDiaryEntry,
+  deleteDiaryEntryController,
 } from '../controllers/entry-controller.mjs';
 import {authenticateToken} from '../middlewares/authentication.mjs';
 import {validationErrorHandler} from '../middlewares/error-handler.mjs';
@@ -53,5 +58,24 @@ entryRouter
     validationErrorHandler,
     deleteEntry,
   );
+
+
+// Päiväkirjamerkinnät
+
+
+entryRouter.route('/:id')
+    .get(authenticateToken, getUserDiaryEntries)
+    .post(authenticateToken, postDiaryEntry)
+    .put(authenticateToken, putDiaryEntry)
+    .delete(authenticateToken, deleteDiaryEntryController);
+
+
+
+// entryRouter.route('/diary/:id')
+//     .get(authenticateToken, getDiaryEntriesByUser);
+
+  // entryRouter
+  //   .post('/', authenticateToken, postDiaryEntry)
+  //   .get('/', authenticateToken, getDiaryEntries);
 
 export default entryRouter;

@@ -25,6 +25,21 @@ CREATE TABLE DiaryEntries (
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 
+
+-- Tehdään taulu yksilöprojektia varten
+
+CREATE TABLE TrainingDiary (
+    diary_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    entry_date DATE NOT NULL,
+    mood INT CHECK (mood BETWEEN 1 AND 10),
+    training_time DECIMAL(3,1),
+    notes TEXT,
+    goals TEXT,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+
 -- Tehdään taulu HEALTHMETRICS terveystulosten kirjaamiseen
 
 CREATE TABLE HealthMetrics (

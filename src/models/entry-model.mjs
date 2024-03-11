@@ -1,3 +1,4 @@
+import { param } from 'express-validator';
 import promisePool from '../utils/database.mjs';
 
 const listAllEntries = async () => {
@@ -100,6 +101,60 @@ const deleteEntryById = async (id, userId) => {
   }
 };
 
+
+// Lisätään funktiot jotka suorittavat päiväkirjaSQL kyselyt
+
+
+// Lisää päiväkirjamerkinnän:
+
+const addDiaryEntry = async (entry) => {
+  const sql = `INSERT INTO TrainingDiary (user_id, entry_date, mood, training_time, notes, goals) VALUES (?, ?, ?, ?, ?, ?)`;
+  const params = [entry.user_id, entry.entry_date, entry.mood, entry.training_time, entry.notes, entry.goals];
+  const [rows] = await promisePool.execute(sql, params);
+  return rows;
+};
+
+// Hakee päiväkirjamerkinnän UserId:n perusteella
+
+const getDiaryEntriesByUserId = async (userId) => {
+  const sql = `SELECT * FROM TrainingDiary WHERE user_id = ?`;
+  const [rows] = await promisePool.query(sql, [userId]);
+  return rows;
+};
+
+// Päivittää päiväkirjamerkinnät
+
+const updateDiaryEntry = async (entryId, entry) => {
+  const sql = `UPDATE TrainingDiary SET entry_date = ?, mood = ?, training_time = ?, notes = ?, goals = ? WHERE diary_id = ?`;
+  const params = [entry.entry_date, entry.mood, entry.training_time, entry.notes, entry.goals, entryId];
+  const [result] = await promisePool.query(sql, params);
+  return result;
+};
+
+// Poistaa päiväkirjamerkinnät
+
+const deleteDiaryEntry = async (entryId) => {
+  const sql = `DELETE FROM TrainingDiary WHERE diary_id = ?`;
+  const [result] = await promisePool.query(sql, [entryId]);
+  return result;
+};
+
+
+// listAllDiaryEntriesByUserId
+
+// const listAllDiaryEntriesByUserId = async (id) => {
+//   try {
+//     const sql = 'SELECT * FROM TrainingDiary WHERE user_id = ?';
+//     const params = [id];
+//     const [rows] = await promisePool.query(sql, params);
+//     return rows;
+//   } catch (e) {
+//     console.error('error', e.message);
+//     return {error: e.message};
+//   }
+// };
+
+
 export {
   listAllEntries,
   listAllEntriesByUserId,
@@ -107,4 +162,50 @@ export {
   addEntry,
   updateEntryById,
   deleteEntryById,
+  // Päiväkirjamerkinnät
+  addDiaryEntry,
+  getDiaryEntriesByUserId,
+  updateDiaryEntry,
+  deleteDiaryEntry,
 };
+
+//
+
+
+
+
+
+
+
+
+// // Uuden päiväkirjamerkinnän lisääminen
+// const addDiaryEntry = async (entry, userId) => {
+//   const { entry_date, mood, training_time, notes, goals } = entry;
+//   try {
+//     const [rows] = await promisePool.execute(
+//       `INSERT INTO TrainingDiary (user_id, entry_date, mood, training_time, notes, goals) VALUES (?, ?, ?, ?, ?, ?)`,
+//       [userId, entry_date, mood, training_time, notes, goals]
+//     );
+//     return { diary_id: rows.insertId };
+//   } catch (error) {
+//     console.error('addEntry error:', error.message);
+//     throw error;
+//   }
+// };
+
+// // Käyttäjän päiväkirjamerkinnän hakeminen
+
+// const listAllDiaryEntriesByUserId = async (userId) => {
+//   try {
+//     const [rows] = await promisePool.execute(
+//       `SELECT * FROM TrainingDiary WHERE user_id = ?`,
+//       [userId]
+//     );
+//     return rows;
+//   } catch (error) {
+//     console.error('listAllEntriesByUserId error:', error.message);
+//     throw error;
+//   }
+// };
+
+
