@@ -49,6 +49,10 @@ app.use('/api/users', userRouter);
 // User authentication
 app.use('/api/auth', authRouter);
 
+// Päiväkirjamerkinnät
+
+app.use('/api/diary', entryRouter);
+
 // Default 404 not found
 app.use(notFoundHandler);
 // Error handler for sending response all error cases

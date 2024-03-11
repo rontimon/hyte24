@@ -77,6 +77,18 @@ const postDiaryEntry = async (req, res, next) => {
   }
 };
 
+// const postDiaryEntry = async (req, res, next) => {
+//   try {
+//     const userId = req.user.user_id;
+//     const entryData = { ...req.body, user_id };
+
+//     const result = await addDiaryEntry(entryData);
+//     res.status(201).json({ message: 'Diary entry added succesfully.', result });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
 // Hakee käyttäjän päiväkirjamerkinnät
 
 const getUserDiaryEntries = async (req, res, next) => {
