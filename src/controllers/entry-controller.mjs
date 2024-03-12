@@ -77,18 +77,6 @@ const postDiaryEntry = async (req, res, next) => {
   }
 };
 
-// const postDiaryEntry = async (req, res, next) => {
-//   try {
-//     const userId = req.user.user_id;
-//     const entryData = { ...req.body, user_id };
-
-//     const result = await addDiaryEntry(entryData);
-//     res.status(201).json({ message: 'Diary entry added succesfully.', result });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
 // Hakee käyttäjän päiväkirjamerkinnät
 
 const getUserDiaryEntries = async (req, res, next) => {
@@ -103,15 +91,65 @@ const getUserDiaryEntries = async (req, res, next) => {
 
 // Päivittää päiväkirjamerkinnän
 
-const putDiaryEntry = async (req, res, next) => {
-  try {
-    const entryId = req.params.id;
-    const result = await updateDiaryEntry(entryId, req.body);
-    res.json({ message: 'Diary entry updated successfully', result });
-  } catch (error) {
-    next(error);
+// const putDiaryEntry = async (req, res, next) => {
+//   try {
+//     const entryId = req.params.id;
+//     const result = await updateDiaryEntry(entryId, req.body);
+//     res.json({ message: 'Diary entry updated successfully', result });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
+const putDiaryEntry = async (req, res) => {
+  const diary_id = req.params.id;
+  const {entry_date, mood, training_time, notes, goals} = req.body;
+  // check that all needed fields are included in request
+  if ((entry_date || mood || training_time || notes || goals) && diary_id) {
+    const result = await updateDiaryEntry({diary_id, ...req.body});
+    if (result.error) {
+      return res.status(result.error).json(result);
+    }
+    return res.status(201).json(result);
+  } else {
+    return res.status(400).json({error: 400, message: 'bad request'});
   }
 };
+
+// const putDiaryEntry = async (req, res, next) => {
+//   try {
+//     const result = await updateDiaryEntry(req.body);
+//     res.status(201).json({ message: 'Diary entry updated succesfully.', result });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
+// esimerkki
+// const putDiaryEntry = async (req, res) => {
+//   try {
+//     const entryId = req.params.id;
+//     const updatedEntry = await updateDiaryEntry(entryId, req.body);
+//     res.json({ message: 'Diary entry updated successfully', updatedEntry });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
+// const putDiaryEntry = async (req, res) => {
+//   const diary_id = req.params.id;
+//   const {type, duration, intensity, date} = req.body;
+//   // check that all needed fields are included in request
+//   if ((type || duration || intensity || date ) && diary_id) {
+//     const result = await updateDiaryEntry({diary_id, ...req.body});
+//     if (result.error) {
+//       return res.status(result.error).json(result);
+//     }
+//     return res.status(201).json(result);
+//   } else {
+//     return res.status(400).json({error: 400, message: 'bad request'});
+//   }
+// };
 
 // poistaa päiväkirjamerkinnän
 

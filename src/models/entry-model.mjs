@@ -124,12 +124,51 @@ const getDiaryEntriesByUserId = async (userId) => {
 
 // Päivittää päiväkirjamerkinnät
 
-const updateDiaryEntry = async (entryId, entry) => {
-  const sql = `UPDATE TrainingDiary SET entry_date = ?, mood = ?, training_time = ?, notes = ?, goals = ? WHERE diary_id = ?`;
-  const params = [entry.entry_date, entry.mood, entry.training_time, entry.notes, entry.goals, entryId];
-  const [result] = await promisePool.query(sql, params);
-  return result;
+// const updateDiaryEntry = async (entryId, entry) => {
+//   const sql = `UPDATE TrainingDiary SET entry_date = ?, mood = ?, training_time = ?, notes = ?, goals = ? WHERE diary_id = ?`;
+//   const params = [entry.entry_date, entry.mood, entry.training_time, entry.notes, entry.goals, entryId];
+//   const [result] = await promisePool.query(sql, params);
+//   return result;
+// };
+
+const updateDiaryEntry = async (entry) => {
+  const {diary_id, entry_date, mood, training_time, notes, goals} = entry;
+  try {
+    const sql =
+      'UPDATE TrainingDiary SET entry_date=?, mood=?, training_time=?, notes=?, goals=? WHERE diary_id=?';
+    const params = [entry_date, mood, training_time, notes, goals, diary_id];
+    const [result] = await promisePool.query(sql, params);
+    // console.log(result);
+    if (result.affectedRows === 0) {
+      return {error: 404, message: 'entry not found'};
+    }
+    return {message: 'Exercise data updated', diary_id};
+  } catch (error) {
+    // fix error handling
+    // now duplicate entry error is generic 500 error, should be fixed to 400 ?
+    console.error('updateDiaryEntry', error);
+    return {error: 500, message: 'db error'};
+  }
 };
+
+// const updateDiaryEntry = async (entry) => {
+//   const sql = `UPDATE TrainingDiary SET (entry_date, mood, training_time, notes, goals) VALUES (?, ?, ?, ?, ?, ?)`;
+//   const params = [entry.entry_date, entry.mood, entry.training_time, entry.notes, entry.goals];
+//   const [rows] = await promisePool.execute(sql, params);
+//   return rows;
+// };
+
+// esimerkki
+// const updateDiaryEntry = async (entryId, entryData) => {
+//   const { entry_date, mood, training_time, notes, goals } = entryData;
+//   const sql = `
+//     UPDATE TrainingDiary
+//     SET entry_date = ?, mood = ?, training_time = ?, notes = ?, goals = ?
+//     WHERE diary_id = ?`;
+//   const params = [entry_date, mood, training_time, notes, goals, entryId];
+//   await promisePool.execute(sql, params);
+//   return { entryId, ...entryData };
+// };
 
 // Poistaa päiväkirjamerkinnät
 

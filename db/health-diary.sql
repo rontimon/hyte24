@@ -33,7 +33,7 @@ CREATE TABLE TrainingDiary (
     user_id INT NOT NULL,
     entry_date DATE NOT NULL,
     mood INT CHECK (mood BETWEEN 1 AND 10),
-    training_time DECIMAL(3,1),
+    training_time DECIMAL(5,2),
     notes TEXT,
     goals TEXT,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
