@@ -62,7 +62,7 @@ entryRouter
 
 // Päiväkirjamerkinnät
 
-entryRouter.route('/:id')
+entryRouter.route('/diary/:id')
     .get(authenticateToken, getUserDiaryEntries)
     .post(authenticateToken, postDiaryEntry)
     .put(authenticateToken, putDiaryEntry)

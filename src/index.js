@@ -51,7 +51,7 @@ app.use('/api/auth', authRouter);
 
 // Päiväkirjamerkinnät
 
-app.use('/api/diary', entryRouter);
+
 
 // Default 404 not found
 app.use(notFoundHandler);
