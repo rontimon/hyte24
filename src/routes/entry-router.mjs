@@ -65,12 +65,30 @@ entryRouter
 entryRouter.route('/diary/:id')
     .get(authenticateToken, getUserDiaryEntries)
     .post(authenticateToken, postDiaryEntry)
-    .put(authenticateToken, putDiaryEntry)
-    // tarkista puttipyynnöt oikein
+
     .delete(authenticateToken, deleteDiaryEntryController);
 
+entryRouter.route('/diary/:id')
+  .put(
+    authenticateToken,
+    param('diary_id', 'must be integer').isInt(),
+    // user_id is not allowed to be changed
+    body('user_id', 'not allowed').not().exists(),
+    body('entry_date').optional().isDate(),
+    body('mood').optional().isInt({min: 1, max: 10}),
+    body('training_time').optional().isInt({min: 1, max: 500}),
+    body('notes').optional().isString().isLength({min: 2, max: 300}),
+    body('goals').optional().isString().isLength({min: 2, max: 300}),
+    putDiaryEntry);
 
-
+// entryRouter.route('/login')
+//     .post(
+//       '/login',
+//       body('username').trim().notEmpty(),
+//       body('password').trim().notEmpty(),
+//       validationErrorHandler,
+//       postLogin,
+//     )
 // entryRouter.route('/diary/:id')
 //     .get(authenticateToken, getDiaryEntriesByUser);
 
