@@ -66,6 +66,7 @@ entryRouter.route('/diary/:id')
     .get(authenticateToken, getUserDiaryEntries)
     .post(authenticateToken, postDiaryEntry)
     .put(authenticateToken, putDiaryEntry)
+    // tarkista puttipyynnöt oikein
     .delete(authenticateToken, deleteDiaryEntryController);
 
 
