@@ -131,25 +131,43 @@ const getDiaryEntriesByUserId = async (userId) => {
 //   return result;
 // };
 
-const updateDiaryEntry = async (entry) => {
-  const {diary_id, entry_date, mood, training_time, notes, goals} = entry;
+const updateDiaryEntry = async (entryId, userId, entryData) => {
+  console.log(entryData);
+  const fieldsToUpdate = Object.keys(entryData).map(key => `${key}=?`).join(', ');
+  const values = [...Object.values(entryData), entryId, userId];
+  const sql = `UPDATE TrainingDiary SET ${fieldsToUpdate} WHERE diary_id = ? AND user_id = ?`;
+
   try {
-    const sql =
-      'UPDATE TrainingDiary SET entry_date=?, mood=?, training_time=?, notes=?, goals=? WHERE diary_id=?';
-    const params = [entry_date, mood, training_time, notes, goals, diary_id];
-    const [result] = await promisePool.query(sql, params);
-    // console.log(result);
+    const [result] = await promisePool.query(sql, values);
     if (result.affectedRows === 0) {
-      return {error: 404, message: 'entry not found'};
+      return {error: 404, message: 'Entry not found or no permission to edit'};
     }
-    return {message: 'Exercise data updated', diary_id};
+    return {message: 'Entry updated successfully', diary_id: entryId};
   } catch (error) {
-    // fix error handling
-    // now duplicate entry error is generic 500 error, should be fixed to 400 ?
-    console.error('updateDiaryEntry', error);
-    return {error: 500, message: 'db error'};
+    console.error('Error updating entry:', error);
+    return {error: 500, message: 'Database error during entry update'};
   }
 };
+
+// const updateDiaryEntry = async (entry) => {
+//   const {diary_id, entry_date, mood, training_time, notes, goals} = entry;
+//   try {
+//     const sql =
+//       'UPDATE TrainingDiary SET entry_date=?, mood=?, training_time=?, notes=?, goals=? WHERE diary_id=?';
+//     const params = [entry_date, mood, training_time, notes, goals, diary_id];
+//     const [result] = await promisePool.query(sql, params);
+//     // console.log(result);
+//     if (result.affectedRows === 0) {
+//       return {error: 404, message: 'entry not found'};
+//     }
+//     return {message: 'Exercise data updated', diary_id};
+//   } catch (error) {
+//     // fix error handling
+//     // now duplicate entry error is generic 500 error, should be fixed to 400 ?
+//     console.error('updateDiaryEntry', error);
+//     return {error: 500, message: 'db error'};
+//   }
+// };
 
 // const updateDiaryEntry = async (entry) => {
 //   const sql = `UPDATE TrainingDiary SET (entry_date, mood, training_time, notes, goals) VALUES (?, ?, ?, ?, ?, ?)`;
@@ -178,20 +196,6 @@ const deleteDiaryEntry = async (entryId) => {
   return result;
 };
 
-
-// listAllDiaryEntriesByUserId
-
-// const listAllDiaryEntriesByUserId = async (id) => {
-//   try {
-//     const sql = 'SELECT * FROM TrainingDiary WHERE user_id = ?';
-//     const params = [id];
-//     const [rows] = await promisePool.query(sql, params);
-//     return rows;
-//   } catch (e) {
-//     console.error('error', e.message);
-//     return {error: e.message};
-//   }
-// };
 
 
 export {
