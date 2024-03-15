@@ -1,26 +1,16 @@
 module.exports = {
   'env': {
-    'browser': true,
     'es2021': true,
+    'node': true,
   },
   'extends': 'google',
-  'overrides': [
-    {
-      'env': {
-        'node': true,
-      },
-      'files': [
-        '.eslintrc.{js,cjs}',
-      ],
-      'parserOptions': {
-        'sourceType': 'script',
-      },
-    },
-  ],
+  'overrides': [],
   'parserOptions': {
     'ecmaVersion': 'latest',
     'sourceType': 'module',
   },
   'rules': {
+    'indent': ['warn', 2],
+    'new-cap': ['error', {capIsNewExceptions: 'Router'}],
   },
 };
