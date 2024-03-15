@@ -1,3 +1,0 @@
-CREATE USER 'healthuser'@'localhost' IDENTIFIED BY 'Healthpass!123';
-GRANT ALL PRIVILEGES ON `HealthDiary`.* TO 'healthuser'@'localhost';
-FLUSH PRIVILEGES;
